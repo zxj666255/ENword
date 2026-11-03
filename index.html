@@ -91,6 +91,14 @@
   .rv-row .ph{font-size:12px;color:var(--acc2);margin-top:2px;}
   .rv-row .cn{font-size:13px;color:var(--sub);margin-top:1px;}
   .rv-group-h{font-size:13px;font-weight:700;color:var(--acc2);margin:12px 0 6px;}
+  .lib-unit{display:flex;justify-content:space-between;align-items:center;margin:12px 0 0;padding:11px 12px;border-radius:12px;cursor:pointer;
+    background:linear-gradient(90deg,var(--acc),var(--acc2));color:#fff;font-weight:700;font-size:14px;box-shadow:0 6px 16px rgba(124,92,255,.28);}
+  .lib-unit .chev{transition:transform .2s;font-size:12px;margin-right:6px;}
+  .lib-unit.open .chev{transform:rotate(90deg);}
+  .lib-unit-c{font-size:12px;opacity:.92;font-weight:600;margin-left:auto;}
+  .lib-body{display:none;margin-bottom:4px;}
+  .lib-body.show{display:block;}
+  .lib-ok{display:inline-block;margin-left:6px;font-size:11px;color:#fff;background:var(--gold);border-radius:8px;padding:1px 6px;font-weight:800;vertical-align:middle;}
   .rv-flip{cursor:pointer;}
   .lib-card{cursor:pointer;background:linear-gradient(135deg,rgba(34,211,238,.12),rgba(124,92,255,.12));}
 </style>
@@ -105,6 +113,7 @@
       <div class="brand">📚 词汇营</div>
       <div class="tabs">
         <div class="tab on" data-tab="home">打卡</div>
+        <div class="tab" data-tab="lib">词库</div>
         <div class="tab" data-tab="review">复习</div>
         <div class="tab" data-tab="parent">家长</div>
       </div>
@@ -251,6 +260,21 @@
       </div>
       <div class="label" style="text-align:center;margin-top:8px">进度 <b id="rvProg" style="color:#fff">0/0</b></div>
     </div>
+  </div>
+
+  <!-- 单词库页 -->
+  <div id="lib" class="study">
+    <div class="back" id="backLib">‹ 返回</div>
+    <div class="row" style="margin-bottom:10px">
+      <div class="h" style="margin:0">📚 课本单词库</div>
+      <div class="label">点 🔊 可听发音</div>
+    </div>
+    <div class="note" style="margin-bottom:12px">这里列出每个课本、每个单元的<b>全部单词</b>。标 <span style="color:var(--acc);font-weight:700">✓已会</span> 的是孩子已掌握的。以后新增课本，会自动出现在这里。</div>
+    <div class="seg" id="libSeg" style="margin-bottom:12px"></div>
+    <div class="card" style="margin-bottom:12px">
+      <div class="row"><div class="label">总览</div><div class="label" id="libSummary"></div></div>
+    </div>
+    <div id="libBody"></div>
   </div>
 
 </div>
@@ -474,6 +498,34 @@ function rvRem(){rvNext();}
 function rvForgot(){const w=rvList[rvIdx];const wk=w.grade+'::'+w.en;
   const st=Object.assign({c:0,w:0,star:0,t:0},S.words[wk]||{});st.c=1;st.t=Date.now();S.words[wk]=st;save();rvNext();}
 
+/* ===== 单词库（课本全词表，按课本→单元浏览） ===== */
+let libGrade=null;
+function renderLib(){
+  if(!libGrade)libGrade=S.settings.grade||'6s';
+  const seg=document.getElementById('libSeg');seg.innerHTML='';
+  Object.keys(BOOKS).forEach(g=>{const el=document.createElement('div');
+    el.className='chip'+(String(libGrade)===g?' on':'');el.textContent=BOOKS[g].label;
+    el.onclick=()=>{libGrade=g;renderLib();};seg.appendChild(el);});
+  const book=BOOKS[libGrade];const ws=book.words;
+  const mastered=ws.filter(w=>{const st=S.words[libGrade+'::'+w[0]];return st&&(st.c||0)>=2;}).length;
+  document.getElementById('libSummary').textContent='共 '+ws.length+' 词 · 已会 '+mastered+' 词';
+  const byU={};ws.forEach(w=>{(byU[w[3]]=byU[w[3]]||[]).push(w);});
+  const units=Object.keys(byU).map(Number).sort((a,b)=>a-b);
+  const body=document.getElementById('libBody');body.innerHTML='';
+  units.forEach(u=>{const name=UNIT_NAMES[u]||('Unit '+u);const list=byU[u];
+    const m=list.filter(w=>{const st=S.words[libGrade+'::'+w[0]];return st&&(st.c||0)>=2;}).length;
+    const h=document.createElement('div');h.className='lib-unit';
+    h.innerHTML='<span><span class="chev">▸</span>'+name+'</span><span class="lib-unit-c">'+m+'/'+list.length+' 已会</span>';
+    const bd=document.createElement('div');bd.className='lib-body';
+    list.forEach(w=>{const st=S.words[libGrade+'::'+w[0]];const ok=st&&(st.c||0)>=2;
+      const row=document.createElement('div');row.className='rv-row';
+      row.innerHTML='<div><div class="en" style="font-size:18px">'+w[0]+(ok?'<span class="lib-ok">✓已会</span>':'')+'</div>'+
+        '<div class="ph">'+w[1]+'</div><div class="cn">'+w[2]+'</div></div>';
+      const s=document.createElement('span');s.className='sound';s.textContent='🔊';s.onclick=()=>speak(w[0]);row.appendChild(s);bd.appendChild(row);});
+    h.onclick=()=>{const open=bd.classList.toggle('show');h.classList.toggle('open',open);};
+    body.appendChild(h);body.appendChild(bd);});
+}
+
 /* ===== 兑换 ===== */
 function redeem(){const m=masteredCount();const need=(S.redeemed+1)*REDEEM_STEP;
   if(m<need){toast('还差 '+(need-m)+' 个已会词');return;}
@@ -487,14 +539,18 @@ document.querySelectorAll('[data-tab]').forEach(t=>t.onclick=()=>{
   document.getElementById('study').style.display='none';
   document.getElementById('parent').style.display=tab==='parent'?'block':'none';
   document.getElementById('review').style.display=tab==='review'?'block':'none';
+  document.getElementById('lib').style.display=tab==='lib'?'block':'none';
   if(tab==='parent')renderParent();
-  if(tab==='review')renderReview();});
+  if(tab==='review')renderReview();
+  if(tab==='lib')renderLib();});
 document.getElementById('startBtn').onclick=openStudy;
 document.getElementById('backBtn').onclick=()=>{document.getElementById('study').style.display='none';document.getElementById('home').style.display='block';renderHome();};
 document.getElementById('backHome').onclick=()=>{document.querySelectorAll('[data-tab]').forEach(x=>x.classList.remove('on'));
   document.querySelector('[data-tab="home"]').classList.add('on');document.getElementById('parent').style.display='none';document.getElementById('home').style.display='block';renderHome();};
 document.getElementById('backHome2').onclick=()=>{document.querySelectorAll('[data-tab]').forEach(x=>x.classList.remove('on'));
   document.querySelector('[data-tab="home"]').classList.add('on');document.getElementById('review').style.display='none';document.getElementById('home').style.display='block';renderHome();};
+document.getElementById('backLib').onclick=()=>{document.querySelectorAll('[data-tab]').forEach(x=>x.classList.remove('on'));
+  document.querySelector('[data-tab="home"]').classList.add('on');document.getElementById('lib').style.display='none';document.getElementById('home').style.display='block';renderHome();};
 document.getElementById('libCard').onclick=openReview;
 document.getElementById('rvFlip').onclick=()=>{rvRevealed=!rvRevealed;const w=rvList[rvIdx];
   document.getElementById('rvPh').textContent=rvRevealed?w.ph:'';
