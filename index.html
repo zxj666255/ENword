@@ -99,6 +99,13 @@
   .lib-body{display:none;margin-bottom:4px;}
   .lib-body.show{display:block;}
   .lib-ok{display:inline-block;margin-left:6px;font-size:11px;color:#fff;background:var(--gold);border-radius:8px;padding:1px 6px;font-weight:800;vertical-align:middle;}
+  .sent-sub{font-size:12px;font-weight:700;color:var(--acc2);margin:10px 4px 4px;}
+  .sent-row{display:flex;align-items:center;justify-content:space-between;background:var(--card2);border:1px solid var(--line);
+    border-radius:14px;padding:11px 12px;margin-bottom:8px;cursor:pointer;}
+  .sent-row .en{font-size:17px;font-weight:700;color:#fff;line-height:1.35;margin-bottom:3px;letter-spacing:.2px;}
+  .sent-row .cn{font-size:14px;color:var(--sub);line-height:1.4;display:none;}
+  .sent-row .cn.show{display:block;}
+  .sent-empty{color:var(--sub);font-size:14px;padding:10px 4px;}
   .rv-flip{cursor:pointer;}
   .lib-card{cursor:pointer;background:linear-gradient(135deg,rgba(34,211,238,.12),rgba(124,92,255,.12));}
 </style>
@@ -113,6 +120,7 @@
       <div class="brand">📚 词汇营</div>
       <div class="tabs">
         <div class="tab on" data-tab="home">打卡</div>
+        <div class="tab" data-tab="sent">短句</div>
         <div class="tab" data-tab="lib">词库</div>
         <div class="tab" data-tab="review">复习</div>
         <div class="tab" data-tab="parent">家长</div>
@@ -277,6 +285,18 @@
     <div id="libBody"></div>
   </div>
 
+  <!-- 短句学习页 -->
+  <div id="sent" class="study">
+    <div class="back" id="backSent">‹ 返回</div>
+    <div class="row" style="margin-bottom:10px">
+      <div class="h" style="margin:0">🗣️ 单元短句</div>
+      <div class="label">点 🔊 听句子</div>
+    </div>
+    <div class="note" style="margin-bottom:12px">按课本、单元查看<b>重点句型</b>和<b>必背好句</b>，点单元标题展开。<b>中文默认隐藏</b>，点任意句子即可<b>显示/隐藏中文</b>，方便默写背诵。</div>
+    <div class="seg" id="sentSeg" style="margin-bottom:12px"></div>
+    <div id="sentBody"></div>
+  </div>
+
 </div>
 <div class="toast" id="toast"></div>
 <div class="saved" id="saved">✓ 已自动保存</div>
@@ -317,6 +337,216 @@ const BOOKS = {
     ["draw","/drɔː/","画",7],["cut","/kʌt/","切；割",7],["along","/əˈlɒŋ/","沿着",7],["feeder","/ˈfiːdə(r)/","喂食器",7],["bottle","/ˈbɒtl/","瓶子",7],["plastic","/ˈplæstɪk/","塑料的",7],["hole","/həʊl/","洞",7],["dry","/draɪ/","干燥的",7],["windy","/ˈwɪndi/","多风的",7],["glue","/ɡluː/","胶水",7],["plate","/pleɪt/","盘子",7],
     ["hike","/haɪk/","远足",8],["hill","/hɪl/","小山",8],["local","/ˈləʊkl/","当地的",8],["camp","/kæmp/","露营",8],["river","/ˈrɪvə(r)/","河",8],["forest","/ˈfɒrɪst/","森林",8],["deep","/diːp/","深的",8],["bowl","/bəʊl/","碗；盆",8],["rope","/rəʊp/","绳子",8],["pen","/pen/","钢笔",8],["glass","/ɡlɑːs/","玻璃",8]
   ]}
+};
+
+/* ===== 单元短句（2026 秋 广州教科版 五/六年级上册，官方知识清单） ===== */
+/* pat=重点句型（含句式骨架+教材例句），good=教材必背好句；[英文, 中文] */
+const SENT = {
+  '6s':{
+    1:{title:'Unit 1 I Am Angry 我生气了', pat:[
+        ["I feel ...","我觉得……"],
+        ["I feel angry when someone makes fun of me.","当有人取笑我时，我感到生气。"],
+        ["I don't like it because ...","我不喜欢它，因为……"],
+        ["I don't like it because it hurts my feelings.","我不喜欢这样，因为它伤害了我的感情。"],
+        ["I get ... when ...","每当……时，我就会……"],
+        ["I get angry when people talk behind my back.","每当有人在背后说我坏话时，我就会生气。"],
+        ["I got really ... because ...","我真的很……，因为……"],
+        ["I got really angry because he broke my favorite pen.","我真的很生气，因为他弄坏了我最喜欢的笔。"]
+      ], good:[
+        ["Everybody gets angry from time to time.","每个人都会偶尔生气。"],
+        ["It's okay to feel angry, but you may hurt others or yourself when you're angry.","感到生气是正常的，但生气时你可能会伤害到别人或自己。"],
+        ["Calm down first, then try to talk to the person and solve the problem together.","先冷静下来，然后试着和对方谈谈，一起解决问题。"]
+      ]},
+    2:{title:'Unit 2 Talk It Out 把话说开', pat:[
+        ["I feel ... when you ...","当你……时，我觉得……"],
+        ["I feel hurt when you make fun of my haircut.","当你取笑我的发型时，我感到受伤。"],
+        ["I'm sorry I was wrong to ...","对不起，我不该……"],
+        ["I'm sorry I was wrong to make fun of you.","对不起，我不该取笑你。"],
+        ["Let's ...","让我们……"],
+        ["Let's calm down and talk it out.","让我们冷静下来好好谈谈。"],
+        ["I know you didn't mean to ...","我知道你不是故意要……"],
+        ["I know you didn't mean to hurt me.","我知道你不是故意要伤害我的。"]
+      ], good:[
+        ["Calming down cannot solve all your problems, but it can be the first step.","冷静不能解决所有问题，但它是第一步。"],
+        ["Tell the person how you feel and why you feel that way.","告诉对方你的感受以及你为什么会有这样的感受。"],
+        ["Listen to what the other person says, and then be happy and move on.","倾听对方的话，然后开心地放下这件事。"]
+      ]},
+    3:{title:'Unit 3 Work It Out Together 一起想办法', pat:[
+        ["Can I talk to you?","我可以和你谈谈吗？"],
+        ["Dad, can I talk to you?","爸爸，我可以和你谈谈吗？"],
+        ["I understand your worries, but ...","我理解你的担心，但是……"],
+        ["I understand your worries, but we have coaches to keep us safe.","我理解你的担心，但我们有教练保证我们的安全。"],
+        ["That makes sense.","那有道理。"],
+        ["Maybe we can ...","或许我们可以……"],
+        ["Maybe we can go twice a week.","或许我们可以一周去两次。"]
+      ], good:[
+        ["Parents can be wrong too, and they may not always understand your feelings.","父母也会犯错，他们可能并不总是理解你的感受。"],
+        ["Slow down and give each other some time, then learn to work things out together.","放慢脚步，给彼此一些时间，然后学会一起解决问题。"],
+        ["Listening to each other is the first step to solving a problem.","彼此倾听是解决问题的第一步。"]
+      ]},
+    4:{title:'Unit 4 Cat or Dog 猫还是狗', pat:[
+        ["... and ... are different because ...","……和……不同，因为……"],
+        ["Cats and dogs are different because they have different habits.","猫和狗不同，因为它们有不同的习性。"],
+        ["They both love ...","它们都喜欢……"],
+        ["They both love playing with balls.","它们都喜欢玩球。"],
+        ["... are ..., while ... are ...","……是……样的，但……却是……样的"],
+        ["Cats are quiet, while dogs are noisy.","猫很安静，而狗很吵闹。"],
+        ["I think it's better to ...","我认为……更好"],
+        ["I think it's better to get a cat.","我认为养猫更好。"]
+      ], good:[
+        ["When we welcome pets into our home, they become part of our family.","当我们把宠物带回家时，它们就成了我们家庭的一员。"],
+        ["Give pets a lot of love and care, and they will love you back.","给宠物很多的爱和照顾，它们也会爱你。"],
+        ["Before getting a pet, think about space, habits and your family's ideas.","养宠物之前，要考虑空间、习性和家人的想法。"]
+      ]},
+    5:{title:'Unit 5 Shop Smart 理智购物', pat:[
+        ["Wait a minute.","等一下。"],
+        ["Wait a minute. This one may not be the best deal.","等一下，这个可能不是最划算的。"],
+        ["Do I really need it?","我真的需要它吗？"],
+        ["Before buying, ask yourself: Do I really need it?","买之前问问自己：我真的需要它吗？"],
+        ["Is it the best deal?","这是最好的交易吗？"],
+        ["Compare prices and ask: Is it the best deal?","比较价格并问问：这是最好的交易吗？"]
+      ], good:[
+        ["You may want to buy something, but it doesn't mean you really need it.","你可能想买某样东西，但这并不意味着你真的需要它。"],
+        ["Sometimes \"buy one get one free\" may not be the better deal.","有时候“买一送一”可能不是更划算的交易。"],
+        ["The best buy is something you really need and will use often.","最好的购买是你真正需要并且会经常使用的东西。"]
+      ]},
+    6:{title:'Unit 6 Keep It Green 守护绿色', pat:[
+        ["It's not good to ...","……是很不好的"],
+        ["It's not good to waste food.","浪费食物是很不好的。"],
+        ["We found that ...","我们发现……"],
+        ["We found that many students throw away leftover food.","我们发现很多学生扔掉剩菜。"],
+        ["The reason is ...","原因是……"],
+        ["The reason is that they take too much food.","原因是他们拿了太多食物。"]
+      ], good:[
+        ["No job is too big, no kid is too small. You can still make a difference.","没有什么工作是太大的，也没有什么孩子是太小的，你仍然可以产生影响。"],
+        ["Start small, like calling for less food waste at your school.","从小事做起，比如在学校呼吁减少食物浪费。"],
+        ["Every small action makes a difference to our environment.","每一个小行动都对我们的环境有影响。"]
+      ]},
+    7:{title:'Unit 7 Play It Safe 安全运动', pat:[
+        ["We should ... before ...","在……之前，我们应该……"],
+        ["We should warm up before playing sports.","运动前我们应该热身。"],
+        ["First things first, make sure to ...","首先，一定确保……"],
+        ["First things first, make sure to warm up before you play.","首先，一定确保运动前热身。"],
+        ["How are you feeling?","你感觉怎么样？"],
+        ["How are you feeling today?","你今天感觉怎么样？"],
+        ["Don't worry.","别担心。"],
+        ["Don't worry. You will be OK soon.","别担心，你很快就会好的。"]
+      ], good:[
+        ["Always get ready before sports, and be careful when you play.","运动前一定要做好准备，运动时要小心。"],
+        ["Drink a lot of water when you play sports, but stay away from iced water right after playing.","运动时要多喝水，但刚运动完不要喝冰水。"],
+        ["If you get hurt, don't keep playing. Go see a doctor right away.","如果你受伤了，不要继续运动，立刻去看医生。"]
+      ]},
+    8:{title:'Review A Gift for Grandpa 给爷爷的礼物', pat:[
+        ["If you ask me, I'd say ...","如果你问我的话，我会说……"],
+        ["If you ask me, I'd say a dog is the best gift.","如果你问我的话，我会说狗是最好的礼物。"],
+        ["How's it going?","最近怎么样？"],
+        ["How's it going, Grandpa?","爷爷，最近怎么样？"]
+      ], good:[
+        ["The best gift we can give our family is our love and time.","我们能给家人最好的礼物是我们的爱和时间。"],
+        ["A good gift doesn't have to be big or cost a lot. It just needs to carry meaning.","好的礼物不需要很大或很贵，它只需要有意义。"],
+        ["Showing your care for your family is the most important thing.","表达你对家人的关心是最重要的事情。"]
+  ]}
+  },
+  '5s':{
+    1:{title:'Unit 1 Learn Words in Chunks 学习单词语块', pat:[
+        ["How do you learn English words?","你是如何学习英文单词的？"],
+        ["I like to learn words in chunks.","我喜欢用语块学习单词。"],
+        ["Every time I ...","每次我……"],
+        ["Every time I learn a new chunk, an old one falls out of my head.","每次我学会一个新语块，就会忘记一个旧的。"],
+        ["I find it useful to ...","我发现…… 很有用。"],
+        ["I find it useful to make word cards with pictures.","我发现制作带图片的单词卡很有用。"],
+        ["What should I do?","我应该怎么做？"],
+        ["What do you mean by ...?","你说的…… 是什么意思？"]
+      ], good:[
+        ["Chunks help you remember words more easily.","语块能帮助你更容易地记住单词。"],
+        ["Spend ten to twenty minutes reading English books every day.","每天花十到二十分钟读英语书。"],
+        ["Remember: it takes time, so don't worry.","记住：这需要时间，所以别担心。"],
+        ["You don't need to get every new word right away.","不用马上掌握所有新单词。"]
+      ]},
+    2:{title:"Unit 2 It's for Everybody 人人可参与", pat:[
+        ["Are you going to join a club?","你要去参加一个社团吗？"],
+        ["Which club are you going to join?","你要参加哪个社团？"],
+        ["I'm going to join the ...","我要加入……"],
+        ["... club can help you ...","……社团可以帮助你……"],
+        ["What are you going to do tomorrow?","你明天打算做什么？"],
+        ["I want to / I'd like to ...","我想……"],
+        ["... because ...","……因为……"],
+        ["What can you get from the club?","你能从社团获得什么？"]
+      ], good:[
+        ["A chance to become a great speaker.","一个成为优秀演讲者的机会。"],
+        ["Just bring an open mind!","只要带着开放的心态就好！"],
+        ["Join us now! Your voice matters!","现在就加入我们吧！你的声音很重要！"]
+      ]},
+    3:{title:'Unit 3 Best Friends Forever 永远的好朋友', pat:[
+        ["What's wrong?","怎么了？"],
+        ["How are you feeling now?","你现在感觉怎么样？"],
+        ["Do you want to talk about it?","你想聊聊这件事吗？"],
+        ["Is everything all right?","一切都好吗？"],
+        ["I'm sorry to hear that.","听到这个消息我很难过。"],
+        ["I know how you feel.","我明白你的感受。"],
+        ["That must be hard.","那一定很难。"],
+        ["I'm here if you want to talk.","你想聊聊的话，我就在这里。"],
+        ["It's okay to feel sad.","感到悲伤是正常的。"]
+      ], good:[
+        ["We can study together.","我们可以一起学习。"],
+        ["I feel better now.","我现在感觉好多了。"],
+        ["Thanks for asking.","谢谢关心。"]
+      ]},
+    4:{title:"Unit 4 Here Comes a Typhoon! 台风来了", pat:[
+        ["A typhoon is coming / landing.","台风即将来临 / 登陆。"],
+        ["You'll need / want to ...","你将需要……"],
+        ["Please remember to ...","请记得……（做某事）"],
+        ["If you happen to ...","如果你碰巧……"],
+        ["... is better than ...","……比……好。"],
+        ["Make sure ...","确保……"],
+        ["What will you do?","你会做什么？"]
+      ], good:[
+        ["Stay safe!","注意安全！"],
+        ["A colourful raincoat is better than an umbrella.","彩色雨衣比雨伞更好。"],
+        ["Bring everything inside before the typhoon comes.","台风来临前把所有东西都拿到室内。"]
+      ]},
+    5:{title:'Unit 5 A Trip to Harbin 哈尔滨之旅', pat:[
+        ["Will it be ... tomorrow?","明天会……吗？"],
+        ["Yes, it will. / No, it won't.","是的，会。/ 不，不会。"],
+        ["Will I need ...?","我需要……吗？"],
+        ["It will be ... degree(s) on Friday.","周五的气温会是……。"],
+        ["Hello, this is ... May I speak to ...?","你好，我是…… 我能和……通话吗？"],
+        ["I'll need warm clothes, such as ...","我需要保暖的衣服，比如……"],
+        ["You'd better take ... with you.","你最好带上……。"]
+      ], good:[
+        ["I'm calling to ask ...","我打电话来是想问……"],
+        ["It will be very cold there.","那里会非常冷。"],
+        ["The temperature will be below zero.","气温会在零下。"]
+      ]},
+    6:{title:'Unit 6 Space Travel 太空旅行', pat:[
+        ["What will you do if you can travel to space?","如果你能去太空旅行，你会做什么？"],
+        ["You'll see / get to / can ...","你将看到 / 可以……"],
+        ["We can ... (in) ... However, we can't do that (in) ...","我们可以在……（某地）……。然而，我们不能在……那么做。"],
+        ["We can ... both (in) ... and (in) ...","我们在……和……都可以……。"]
+      ], good:[
+        ["In space, you can watch 16 sunrises every day!","在太空中，你每天可以看到16次日出！"],
+        ["You will eat dried food and drink from bags.","你会吃脱水食物，用袋子喝水。"],
+        ["One day, everyone will be able to travel to space.","总有一天，每个人都能去太空旅行。"]
+      ]},
+    7:{title:'Unit 7 Make a Bird Feeder 制作喂鸟器', pat:[
+        ["How do you make a bird feeder?","你怎么做一个喂鸟器？"],
+        ["First, ... and then ...","首先……然后……"],
+        ["I will first ... Next, I will need to ... Then, I'll just ... Finally, ...","我将首先…… 接下来，我将需要…… 然后，我将…… 最后，……"],
+        ["What do you think of this bird feeder?","你觉得这个喂鸟器怎么样？"]
+      ], good:[
+        ["Make your own feeder and place it in a tree.","做一个你自己的喂鸟器，然后把它挂在树上。"],
+        ["You'll have many new friends!","这样你就会有许多新朋友啦！"],
+        ["It'll keep food dry.","它会保持食物干燥。"]
+      ]},
+    8:{title:"Review Let's Go Camping! 我们去露营", pat:[
+        ["I think they can ... They can also ... because ...","我认为他们可以…… 他们也可以…… 因为……"],
+        ["By the river, you'll need to ... Don't ...","在河边，你需要…… 不要……"]
+      ], good:[
+        ["Safety always comes first.","安全永远是第一位的。"],
+        ["Don't miss this fun event! Hope to see you all!","不要错过这个有趣的活动！希望见到大家！"],
+        ["There are many other things you can grow at home.","你还可以在家里种很多其他东西。"]
+      ]}
+  }
 };
 const UNIT_NAMES={1:"Unit 1",2:"Unit 2",3:"Unit 3",4:"Unit 4",5:"Unit 5",6:"Unit 6",7:"Unit 7",8:"Review"};
 const LV_NAMES=["词汇新芽","单词萌新","拼读小兵","记忆学徒","词汇能手","背词达人","语感高手","词海游侠","词汇宗师","单词大师"];
@@ -526,6 +756,37 @@ function renderLib(){
     body.appendChild(h);body.appendChild(bd);});
 }
 
+/* ===== 单元短句学习 ===== */
+let sentGrade=null;
+function renderSent(){
+  if(!sentGrade)sentGrade=S.settings.grade||'6s';
+  const seg=document.getElementById('sentSeg');seg.innerHTML='';
+  Object.keys(BOOKS).forEach(g=>{const el=document.createElement('div');
+    el.className='chip'+(String(sentGrade)===g?' on':'');el.textContent=BOOKS[g].label;
+    el.onclick=()=>{sentGrade=g;renderSent();};seg.appendChild(el);});
+  const body=document.getElementById('sentBody');body.innerHTML='';
+  const data=SENT[sentGrade];
+  if(!data){body.innerHTML='<div class="sent-empty">「'+BOOKS[sentGrade].label+'」短句正在整理中，敬请期待～</div>';return;}
+  Object.keys(data).map(Number).sort((a,b)=>a-b).forEach(u=>{
+    const unit=data[u];
+    const cnt=(unit.pat?unit.pat.length:0)+(unit.good?unit.good.length:0);
+    const h=document.createElement('div');h.className='lib-unit';
+    h.innerHTML='<span><span class="chev">▸</span>'+unit.title+'</span><span class="lib-unit-c">'+cnt+' 句</span>';
+    const bd=document.createElement('div');bd.className='lib-body';
+    if(unit.pat&&unit.pat.length){const sub=document.createElement('div');sub.className='sent-sub';sub.textContent='★ 重点句型';bd.appendChild(sub);
+      unit.pat.forEach(p=>bd.appendChild(sentCard(p[0],p[1])));}
+    if(unit.good&&unit.good.length){const sub=document.createElement('div');sub.className='sent-sub';sub.textContent='✦ 教材必背好句';bd.appendChild(sub);
+      unit.good.forEach(p=>bd.appendChild(sentCard(p[0],p[1])));}
+    h.onclick=()=>{const open=bd.classList.toggle('show');h.classList.toggle('open',open);};
+    body.appendChild(h);body.appendChild(bd);});
+}
+function sentCard(en,cn){const row=document.createElement('div');row.className='sent-row';
+  row.innerHTML='<div style="flex:1"><div class="en">'+en+'</div><div class="cn">'+cn+'</div></div>';
+  const s=document.createElement('span');s.className='sound';s.textContent='🔊';s.style.marginLeft='10px';s.onclick=e=>{e.stopPropagation();speak(en);};
+  row.appendChild(s);
+  row.onclick=()=>{const c=row.querySelector('.cn');c.classList.toggle('show');};
+  return row;}
+
 /* ===== 兑换 ===== */
 function redeem(){const m=masteredCount();const need=(S.redeemed+1)*REDEEM_STEP;
   if(m<need){toast('还差 '+(need-m)+' 个已会词');return;}
@@ -540,9 +801,11 @@ document.querySelectorAll('[data-tab]').forEach(t=>t.onclick=()=>{
   document.getElementById('parent').style.display=tab==='parent'?'block':'none';
   document.getElementById('review').style.display=tab==='review'?'block':'none';
   document.getElementById('lib').style.display=tab==='lib'?'block':'none';
+  document.getElementById('sent').style.display=tab==='sent'?'block':'none';
   if(tab==='parent')renderParent();
   if(tab==='review')renderReview();
-  if(tab==='lib')renderLib();});
+  if(tab==='lib')renderLib();
+  if(tab==='sent')renderSent();});
 document.getElementById('startBtn').onclick=openStudy;
 document.getElementById('backBtn').onclick=()=>{document.getElementById('study').style.display='none';document.getElementById('home').style.display='block';renderHome();};
 document.getElementById('backHome').onclick=()=>{document.querySelectorAll('[data-tab]').forEach(x=>x.classList.remove('on'));
@@ -551,6 +814,8 @@ document.getElementById('backHome2').onclick=()=>{document.querySelectorAll('[da
   document.querySelector('[data-tab="home"]').classList.add('on');document.getElementById('review').style.display='none';document.getElementById('home').style.display='block';renderHome();};
 document.getElementById('backLib').onclick=()=>{document.querySelectorAll('[data-tab]').forEach(x=>x.classList.remove('on'));
   document.querySelector('[data-tab="home"]').classList.add('on');document.getElementById('lib').style.display='none';document.getElementById('home').style.display='block';renderHome();};
+document.getElementById('backSent').onclick=()=>{document.querySelectorAll('[data-tab]').forEach(x=>x.classList.remove('on'));
+  document.querySelector('[data-tab="home"]').classList.add('on');document.getElementById('sent').style.display='none';document.getElementById('home').style.display='block';renderHome();};
 document.getElementById('libCard').onclick=openReview;
 document.getElementById('rvFlip').onclick=()=>{rvRevealed=!rvRevealed;const w=rvList[rvIdx];
   document.getElementById('rvPh').textContent=rvRevealed?w.ph:'';
