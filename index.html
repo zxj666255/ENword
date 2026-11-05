@@ -120,6 +120,7 @@
       <div class="brand">📚 词汇营</div>
       <div class="tabs">
         <div class="tab on" data-tab="home">打卡</div>
+        <div class="tab" data-tab="phra">短语</div>
         <div class="tab" data-tab="sent">短句</div>
         <div class="tab" data-tab="lib">词库</div>
         <div class="tab" data-tab="review">复习</div>
@@ -283,6 +284,18 @@
       <div class="row"><div class="label">总览</div><div class="label" id="libSummary"></div></div>
     </div>
     <div id="libBody"></div>
+  </div>
+
+  <!-- 短语学习页 -->
+  <div id="phra" class="study">
+    <div class="back" id="backPhra">‹ 返回</div>
+    <div class="row" style="margin-bottom:10px">
+      <div class="h" style="margin:0">🧩 单元短语</div>
+      <div class="label">点 🔊 听发音</div>
+    </div>
+    <div class="note" style="margin-bottom:12px">按课本、单元查看每课<b>重点短语（词块）</b>，点单元标题展开。<b>中文默认隐藏</b>，点任意短语即可<b>显示/隐藏中文</b>，方便默写背诵。</div>
+    <div class="seg" id="phraSeg" style="margin-bottom:12px"></div>
+    <div id="phraBody"></div>
   </div>
 
   <!-- 短句学习页 -->
@@ -548,6 +561,205 @@ const SENT = {
       ]}
   }
 };
+
+/* ===== 单元短语（2026 秋 广州教科版 六年级上册 / 五年级上册，官方知识清单"二、重点短语"） ===== */
+/* list=[英文, 中文]；新增课本只需在下面加一个 '7s':{...} 即可 */
+const PHRA = {
+  '6s':{
+    1:{title:'Unit 1 I Am Angry 我生气了', list:[
+      ["yell and cry","边哭边喊"],
+      ["go for a walk","出去走走"],
+      ["shout bad words","大声骂人"],
+      ["take a deep breath","深呼吸"],
+      ["throw things","扔东西"],
+      ["count to ten","数到十"],
+      ["very angry","非常生气"],
+      ["eat a lot","吃很多"],
+      ["listen to some music","听一点音乐"],
+      ["yell out loud","大声喊叫"],
+      ["talk with friends on the phone","与朋友通电话"],
+      ["calm down","冷静，平静下来"],
+      ["solve the problem","解决问题"]
+    ]},
+    2:{title:'Unit 2 Talk It Out 好好谈谈', list:[
+      ["talk it out","谈话和解"],
+      ["have a new haircut","剪了个新发型"],
+      ["make fun of ...","开某人的玩笑"],
+      ["call ... names","给……起外号"],
+      ["yell at ...","对……大喊"],
+      ["fight with each other","双方争吵"],
+      ["put oneself in others' shoes","换位思考"],
+      ["put this behind us","把这件事抛在脑后"],
+      ["best friends forever","永远的好朋友"]
+    ]},
+    3:{title:'Unit 3 Work It Out Together 一起解决', list:[
+      ["bring up the problem","提出问题"],
+      ["listen to each other","彼此倾听"],
+      ["take turns to talk","轮流交谈"],
+      ["come up with ideas","提出想法"],
+      ["work it out together","一起想办法解决"],
+      ["finish homework","完成作业"]
+    ]},
+    4:{title:'Unit 4 Cat or Dog 猫还是狗', list:[
+      ["play during the night","在夜间玩耍"],
+      ["stay inside","待在室内"],
+      ["sleep during the day","白天睡觉"],
+      ["don't like to be alone","不喜欢独处"],
+      ["lose hair","掉毛"],
+      ["love playing with toys","喜欢玩玩具"],
+      ["very busy at work","工作很忙"],
+      ["an animal lover","一个动物爱好者"],
+      ["a light sleeper","一个睡得浅的人"],
+      ["like to go to the park","喜欢去公园"],
+      ["go to school early","上学很早"],
+      ["far away","很远"]
+    ]},
+    5:{title:'Unit 5 Shop Smart 理智购物', list:[
+      ["shop smart","理智购物"],
+      ["think about it more","多考虑一下"],
+      ["wait a few days","等几天"],
+      ["learn about it","了解它"],
+      ["look for a better deal","寻找更划算的交易"],
+      ["give it a try","试一试"],
+      ["compare and choose","比较并选择"],
+      ["buy one get one free","买一送一"],
+      ["a jump rope","一个跳绳"]
+    ]},
+    6:{title:'Unit 6 Keep It Green 保持绿色', list:[
+      ["give too much food","给太多食物"],
+      ["food waste","食物浪费；厨余垃圾"],
+      ["take too much food","拿太多食物"],
+      ["be picky about food","挑食"],
+      ["eat snacks","吃零食"],
+      ["rush out to play","冲出去玩"],
+      ["canteen staff","食堂员工"],
+      ["have a good breakfast","吃好早餐"],
+      ["take less food","少拿点食物"],
+      ["change the menu","更换菜单"],
+      ["try all kinds of foods","尝试各种食物"],
+      ["save food for later","留些食物晚些吃"]
+    ]},
+    7:{title:'Unit 7 Play It Safe 安全运动', list:[
+      ["drink enough water","喝足量的水"],
+      ["take water breaks","休息下，喝点水"],
+      ["warm up","热身"],
+      ["wear the right shoes","穿合适的鞋子"],
+      ["work with your teammates","和队友合作"],
+      ["watch out for others on the playground","在操场上小心他人"],
+      ["don't play if you are hurt","受伤了就别运动"],
+      ["follow the rules","遵守规则"],
+      ["learn a lesson","得到教训；获得经验"]
+    ]},
+    8:{title:'Review A Gift for Grandpa 给爷爷的礼物', list:[
+      ["stay healthy","保持健康"],
+      ["have a sweet tooth","爱吃甜食"],
+      ["build good habits","养成好习惯"],
+      ["get some sunshine","晒晒太阳"]
+    ]}
+  },
+  '5s':{
+    1:{title:'Unit 1 Learn Words in Chunks 语块学习', list:[
+      ["learn words in chunks","用语块学习单词"],
+      ["use pictures","用图片"],
+      ["look them up in the dictionary","查字典"],
+      ["read them out loud","大声朗读"],
+      ["practise with others","和其他人一起练习"],
+      ["make word cards with pictures","制作有图片的单词卡"],
+      ["put chunks together","把语块放在一起"],
+      ["keep in mind","记住"]
+    ]},
+    2:{title:"Unit 2 It's for Everybody 社团招新", list:[
+      ["a science club","一个科学社团"],
+      ["a dance club","一个舞蹈社团"],
+      ["a football club","一个足球社团"],
+      ["a speech club","一个演讲社团"],
+      ["have better writing and speaking skills","掌握更好的写作和表达技巧"],
+      ["try new things","尝试新事物"],
+      ["make more friends","交更多的朋友"],
+      ["share my ideas","分享我的观点"],
+      ["grow taller and stronger","长得更高更壮"],
+      ["a chance to ...","一个……的机会"],
+      ["make you look cool","让你看起来很酷"],
+      ["as well","也"],
+      ["be good at it","很擅长这件事"]
+    ]},
+    3:{title:'Unit 3 Best Friends Forever 永远的朋友', list:[
+      ["lose the game","输了比赛"],
+      ["so difficult","太难了"],
+      ["give up","放弃"],
+      ["study together","一起学习"],
+      ["get some food","吃点东西"],
+      ["sorry to hear that","听到这个消息很难过"],
+      ["from time to time","时不时地"],
+      ["hang out","闲逛"],
+      ["That must be hard.","那一定很难。"],
+      ["I'm here if you want to talk.","你想聊聊的话，我就在这里。"],
+      ["I know how you feel.","我明白你的感受。"],
+      ["It's okay to feel sad.","感到悲伤是正常的。"],
+      ["What's wrong?","怎么了？"],
+      ["Do you want to talk about it?","你想聊聊吗？"],
+      ["How are you feeling now?","你现在感觉怎么样？"],
+      ["Is everything all right?","一切都好吗？"],
+      ["Thanks for asking.","谢谢关心。"],
+      ["I feel better now.","我现在感觉好多了。"]
+    ]},
+    4:{title:'Unit 4 Here Comes a Typhoon! 台风来了', list:[
+      ["heavy rain","大雨"],
+      ["strong wind","大风"],
+      ["stay away from trees","远离树木"],
+      ["turn off the lights","关灯"],
+      ["close the windows","关窗户"],
+      ["wear a colourful raincoat","穿彩色的雨衣"],
+      ["bring everything inside","把所有东西都拿到室内"],
+      ["watch your step","注意脚下"],
+      ["stay indoors","待在室内"],
+      ["keep safe","保持安全"]
+    ]},
+    5:{title:'Unit 5 A Trip to Harbin 哈尔滨之旅', list:[
+      ["ten below zero degrees","零下十度"],
+      ["a lot of clothes","许多衣服"],
+      ["a pair of warm shoes","一双保暖的鞋"],
+      ["such as","比如"],
+      ["You'd better take ... with you","你最好带上……"],
+      ["May I speak to ...","我能和……通话吗？"],
+      ["I'm calling to ask ...","我打电话来是想问……"]
+    ]},
+    6:{title:'Unit 6 Space Travel 太空旅行', list:[
+      ["go on a spacewalk","太空行走"],
+      ["watch the sunrise","看日出"],
+      ["work with a space robot","与太空机器人一起工作"],
+      ["talk to astronauts","与航天员交谈"],
+      ["try space food and drinks","品尝太空食品和饮料"],
+      ["visit the space farm","参观太空农场"],
+      ["take photos of the Earth","拍摄地球的照片"],
+      ["take a ride on a spaceship","乘坐宇宙飞船"],
+      ["live like an astronaut","像航天员一样生活"],
+      ["the difference between ... and ...","……和……的区别"]
+    ]},
+    7:{title:'Unit 7 Make a Bird Feeder 做喂鸟器', list:[
+      ["make a bird feeder","做一个喂鸟器"],
+      ["draw cutting lines","绘制切割线"],
+      ["cut along the lines","沿着线剪切"],
+      ["put food inside","把食物放进去"],
+      ["place it on a tree","把它放在树上"],
+      ["a used plastic bottle","一个用过的塑料瓶"],
+      ["keep food dry","保持食物干燥"],
+      ["stay still on windy days","在大风天保持不动"],
+      ["last for weeks","持续数周"]
+    ]},
+    8:{title:'Review Let\'s Go Camping! 去露营', list:[
+      ["go hiking in the hills","去山里远足"],
+      ["try local foods","品尝当地食物"],
+      ["watch out for ...","小心……"],
+      ["stay away from deep water","远离深水"],
+      ["stay together","待在一起"],
+      ["find an old potato","找一个老土豆"],
+      ["cut it in half","把它对半切开"],
+      ["put it into the soil","放进土里"],
+      ["water the plant","给植株浇水"]
+    ]}
+  }
+};
 const UNIT_NAMES={1:"Unit 1",2:"Unit 2",3:"Unit 3",4:"Unit 4",5:"Unit 5",6:"Unit 6",7:"Unit 7",8:"Review"};
 const LV_NAMES=["词汇新芽","单词萌新","拼读小兵","记忆学徒","词汇能手","背词达人","语感高手","词海游侠","词汇宗师","单词大师"];
 
@@ -787,6 +999,28 @@ function sentCard(en,cn){const row=document.createElement('div');row.className='
   row.onclick=()=>{const c=row.querySelector('.cn');c.classList.toggle('show');};
   return row;}
 
+/* ===== 短语渲染 ===== */
+let phraGrade=null;
+function renderPhra(){
+  if(!phraGrade)phraGrade=S.settings.grade||'6s';
+  const seg=document.getElementById('phraSeg');seg.innerHTML='';
+  Object.keys(BOOKS).forEach(g=>{const el=document.createElement('div');
+    el.className='chip'+(String(phraGrade)===g?' on':'');el.textContent=BOOKS[g].label;
+    el.onclick=()=>{phraGrade=g;renderPhra();};seg.appendChild(el);});
+  const body=document.getElementById('phraBody');body.innerHTML='';
+  const data=PHRA[phraGrade];
+  if(!data){body.innerHTML='<div class="sent-empty">「'+BOOKS[phraGrade].label+'」短语正在整理中，敬请期待～</div>';return;}
+  Object.keys(data).map(Number).sort((a,b)=>a-b).forEach(u=>{
+    const unit=data[u];
+    const cnt=unit.list.length;
+    const h=document.createElement('div');h.className='lib-unit';
+    h.innerHTML='<span><span class="chev">▸</span>'+unit.title+'</span><span class="lib-unit-c">'+cnt+' 个</span>';
+    const bd=document.createElement('div');bd.className='lib-body';
+    unit.list.forEach(p=>bd.appendChild(sentCard(p[0],p[1])));
+    h.onclick=()=>{const open=bd.classList.toggle('show');h.classList.toggle('open',open);};
+    body.appendChild(h);body.appendChild(bd);});
+}
+
 /* ===== 兑换 ===== */
 function redeem(){const m=masteredCount();const need=(S.redeemed+1)*REDEEM_STEP;
   if(m<need){toast('还差 '+(need-m)+' 个已会词');return;}
@@ -802,10 +1036,12 @@ document.querySelectorAll('[data-tab]').forEach(t=>t.onclick=()=>{
   document.getElementById('review').style.display=tab==='review'?'block':'none';
   document.getElementById('lib').style.display=tab==='lib'?'block':'none';
   document.getElementById('sent').style.display=tab==='sent'?'block':'none';
+  document.getElementById('phra').style.display=tab==='phra'?'block':'none';
   if(tab==='parent')renderParent();
   if(tab==='review')renderReview();
   if(tab==='lib')renderLib();
-  if(tab==='sent')renderSent();});
+  if(tab==='sent')renderSent();
+  if(tab==='phra')renderPhra();});
 document.getElementById('startBtn').onclick=openStudy;
 document.getElementById('backBtn').onclick=()=>{document.getElementById('study').style.display='none';document.getElementById('home').style.display='block';renderHome();};
 document.getElementById('backHome').onclick=()=>{document.querySelectorAll('[data-tab]').forEach(x=>x.classList.remove('on'));
@@ -816,6 +1052,8 @@ document.getElementById('backLib').onclick=()=>{document.querySelectorAll('[data
   document.querySelector('[data-tab="home"]').classList.add('on');document.getElementById('lib').style.display='none';document.getElementById('home').style.display='block';renderHome();};
 document.getElementById('backSent').onclick=()=>{document.querySelectorAll('[data-tab]').forEach(x=>x.classList.remove('on'));
   document.querySelector('[data-tab="home"]').classList.add('on');document.getElementById('sent').style.display='none';document.getElementById('home').style.display='block';renderHome();};
+document.getElementById('backPhra').onclick=()=>{document.querySelectorAll('[data-tab]').forEach(x=>x.classList.remove('on'));
+  document.querySelector('[data-tab="home"]').classList.add('on');document.getElementById('phra').style.display='none';document.getElementById('home').style.display='block';renderHome();};
 document.getElementById('libCard').onclick=openReview;
 document.getElementById('rvFlip').onclick=()=>{rvRevealed=!rvRevealed;const w=rvList[rvIdx];
   document.getElementById('rvPh').textContent=rvRevealed?w.ph:'';
